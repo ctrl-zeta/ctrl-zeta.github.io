@@ -1,1 +1,177 @@
-<h1>zeta</h1>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cybersecurity Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <button id="toggle-btn" aria-label="Toggle sidebar">
+    <span></span><span></span><span></span>
+  </button>
+  <span class="header-title">~/portfolio</span>
+  <span class="header-dot" title="Disponible"></span>
+</header>
+
+<!-- OVERLAY MÓVIL -->
+<div id="overlay"></div>
+l
+<!-- SIDEBAR — perfil completo aquí -->
+<aside id="sidebar">
+
+  <!-- Foto + datos personales -->
+  <div class="profile-block">
+    <div class="avatar-wrap">
+      <!-- Cambia src por tu foto: ./foto.jpg o un URL directo -->
+      <img src="75fd72c3fe0a3287b2e164d814bc67a2.jpg" alt="Avatar" id="avatar" />
+    </div>
+    <p class="profile-name">zeta</p>
+    <p class="profile-role">Student · Cybersecurity Engineering</p>
+    <p class="profile-bio">
+      Red Team | CTF Player | CCNA | CRTA | AD-RTS | CRT-ID | CRT-COI | Prolab Dante, MiniProlab Mythical
+    </p>
+  </div>
+
+  <div class="sidebar-divider"></div>
+
+  <!-- Navegación interna -->
+  <div class="sidebar-section">
+    <p class="sidebar-label">Contenido</p>
+    <ul class="sidebar-nav">
+      <li><a href="#writeups"        class="nav-link"><span class="ico">✦</span> Write-ups</a></li>
+      <li><a href="#cheatsheets"     class="nav-link"><span class="ico">✦</span> Cheatsheets</a></li>
+      <li><a href="#certificaciones" class="nav-link"><span class="ico">✦</span> Certificaciones</a></li>
+      <li><a href="#habilidades"     class="nav-link"><span class="ico">✦</span> Habilidades</a></li>
+    </ul>
+  </div>
+
+  <div class="sidebar-divider"></div>
+
+  <!-- Perfiles externos -->
+  <div class="sidebar-section">
+    <p class="sidebar-label">Perfiles</p>
+    <ul class="sidebar-nav">
+      <li><a href="https://github.com/ctrl-zeta" target="_blank"><span class="ico ext">↗</span> GitHub</a></li>
+      <li><a href="https://linkedin.com/in/zabarburuluis" target="_blank"><span class="ico ext">↗</span> LinkedIn</a></li>
+      <li><a href="https://tryhackme.com/p/xyzeta" target="_blank"><span class="ico ext">↗</span> TryHackMe</a></li>
+      <li><a href="https://app.hackthebox.com/public/users/2377387" target="_blank"><span class="ico ext">↗</span> HackTheBox</a></li>
+    </ul>
+
+  <div class="sidebar-divider"></div>
+
+  <!-- Contacto rápido -->
+  <div class="sidebar-section">
+    <p class="sidebar-label">Contacto</p>
+    <ul class="sidebar-nav">
+        <li><a href="mailto:zabarburuargomedaluis@gmail.com"><span class="ico ext"></span>zabarburuargoemdaluis@gmail.com</a></li>
+    </ul>
+  </div>
+
+
+
+</aside>
+
+<!-- CONTENIDO PRINCIPAL -->
+<div id="layout">
+  <main id="main">
+
+    <!-- WRITE-UPS -->
+    <section class="section fade-in" id="writeups">
+      <h2 class="section-title">Write-ups</h2>
+      <div class="card-grid">
+
+        <a class="card card-link" href="#" target="_blank">
+          <div class="card-header">
+            <span class="card-platform htb">XXX</span>
+            <span class="card-date">XXX</span>
+          </div>
+          <p class="card-title">XXX</p>
+          <p class="card-desc">XXX</p>
+          <div class="card-tags">
+            <span class="tag">XXX</span>
+            <span class="tag">XXX</span>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- CHEATSHEETS -->
+    <section class="section fade-in" id="cheatsheets">
+      <h2 class="section-title">Cheatsheets</h2>
+      <div class="card-grid cols-2">
+
+        <a class="card card-link" href="Linux Cheat Seet.md" target="_blank">
+          <p class="card-title">Linux - Enumeracion - Privilege Scalation</p>
+          <p class="card-desc">Vectores Comunes.</p>
+          <div class="card-tags"><span class="tag">Recon</span></div>
+        </a>
+
+        <a class="card card-link" href="#" target="_blank">
+          <p class="card-title">NetExec</p>
+          <p class="card-desc">Reconocimiento sobre distintos protocolos y/o vulenrabilidades con la herramienta.</p>
+          <div class="card-tags"><span class="tag">Recon</span></div>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- CERTIFICACIONES -->
+    <section class="section fade-in" id="certificaciones">
+      <h2 class="section-title">Certificaciones &amp; Cursos</h2>
+      <div class="card-grid">
+
+        <div class="card cert-card">
+          <span class="cert-badge done">✓</span>
+          <div class="cert-right">
+            <p class="card-title">CRTA</p>
+            <p class="card-desc">CyberWarFare Labs · 2025 &nbsp;·&nbsp; <a href="https://labs.cyberwarfare.live/credential/achievement/68eefeb2cd29f547b669f346" target="_blank" class="cert-link">Credencial ↗</a></p>
+          </div>
+        </div>
+
+                <div class="card cert-card">
+          <span class="cert-badge done">✓</span>
+          <div class="cert-right">
+            <p class="card-title">AD-RTS</p>
+            <p class="card-desc">CyberWarFare Labs · 2025 &nbsp;·&nbsp; <a href="https://labs.cyberwarfare.live/credential/achievement/68e93be6af628a804cb2995f" target="_blank" class="cert-link">Credencial ↗</a></p>
+          </div>
+        </div>
+
+        <div class="card cert-card">
+          <span class="cert-badge pending">…</span>
+          <div class="cert-right">
+            <p class="card-title">WEB-RTA - En progreso</p>
+            <p class="card-desc"></p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- HABILIDADES -->
+    <section class="section fade-in" id="habilidades">
+      <h2 class="section-title">Habilidades</h2>
+      <div class="skill-list">
+        <span class="skill-chip">Active Directory</span>
+        <span class="skill-chip">CTFs</span>
+        <span class="skill-chip">Hacking Web (OWASP)</span>
+        <span class="skill-chip">IoT Security (MQTT/ModBus)</span>
+        <span class="skill-chip">Privilege Scalation Linux &amp; Windows</span>
+      </div>
+    </section>
+
+    <footer>
+      <p>© 2025 Tu Nombre &nbsp;·&nbsp; Ciberseguridad</p>
+    </footer>
+
+  </main>
+</div>
+
+<script src="main.js"></script>
+</body>
+</html>
