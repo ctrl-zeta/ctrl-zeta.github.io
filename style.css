@@ -1,5 +1,6 @@
 /* ══════════════════════════════════════
    style.css — Portfolio Ciberseguridad
+   Incluye estilos base + páginas doc
    ══════════════════════════════════════ */
 
 :root {
@@ -442,3 +443,203 @@ body.sidebar-open #overlay {
   body.sidebar-open #main { margin-left: 0; }
   body.sidebar-open #overlay { display: block; }
 }
+
+/* ─────────────────────────────
+   PÁGINAS DE DOCUMENTACIÓN
+   (cheatsheets, write-ups, etc.)
+───────────────────────────── */
+
+/* Cabecera del documento */
+.doc-header { margin-bottom: 52px; }
+.doc-header .hero-tag { margin-bottom: 12px; }
+.doc-header h1 {
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: 300;
+  color: var(--bright);
+  letter-spacing: -.02em;
+  line-height: 1.2;
+}
+.doc-header p {
+  font-size: .88rem;
+  color: var(--muted);
+  margin-top: 10px;
+  line-height: 1.6;
+}
+
+/* Breadcrumb */
+.breadcrumb {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: .65rem;
+  color: var(--muted);
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.breadcrumb a {
+  color: var(--muted);
+  text-decoration: none;
+  transition: color .2s;
+}
+.breadcrumb a:hover { color: var(--text); }
+.breadcrumb span { opacity: .4; }
+
+/* Grupo / sección de contenido */
+.cs-group { margin-bottom: 56px; }
+
+.cs-group-title {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: .68rem;
+  letter-spacing: .14em;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.cs-group-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* Lista de comandos */
+.cmd-list { display: flex; flex-direction: column; gap: 10px; }
+
+.cmd-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 14px 18px;
+  transition: border-color .22s var(--ease), background .22s var(--ease);
+}
+.cmd-item:hover {
+  border-color: #3a3a42;
+  background: var(--surface2);
+}
+
+.cmd-code {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: .8rem;
+  color: #a0c8a0;
+  margin-bottom: 6px;
+  word-break: break-all;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+.cmd-code::before {
+  content: '$';
+  color: var(--muted);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.cmd-desc {
+  font-size: .82rem;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+/* Código inline dentro de descripciones */
+.cmd-desc code, .callout code {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: .78rem;
+  color: #a0c8a0;
+}
+
+/* Sub-opciones de un comando */
+.cmd-sub {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.cmd-sub-item {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  font-size: .8rem;
+}
+.cmd-sub-item code {
+  font-family: 'Share Tech Mono', monospace;
+  color: #8ab8b0;
+  font-size: .76rem;
+  flex-shrink: 0;
+}
+.cmd-sub-item span { color: var(--muted); line-height: 1.55; }
+
+/* Nota / callout */
+.callout {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid #4a6a58;
+  border-radius: 0 9px 9px 0;
+  padding: 14px 18px;
+  margin-bottom: 10px;
+}
+.callout p {
+  font-size: .82rem;
+  color: var(--muted);
+  line-height: 1.65;
+}
+.callout strong { color: var(--text); }
+
+/* Grid de herramientas / links externos */
+.tool-grid { display: flex; flex-direction: column; gap: 8px; }
+
+.tool-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  text-decoration: none;
+  color: var(--text);
+  font-size: .84rem;
+  transition: border-color .22s var(--ease), color .22s var(--ease), background .22s var(--ease);
+}
+.tool-link:hover {
+  border-color: #3a3a42;
+  background: var(--surface2);
+  color: var(--bright);
+}
+.tool-link .tool-ico {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: .6rem;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+.tool-link .tool-name {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: .75rem;
+  color: #8ab8b0;
+  flex-shrink: 0;
+}
+.tool-link .tool-arrow {
+  color: var(--muted);
+  font-size: .8rem;
+  margin-left: auto;
+}
+
+/* Badges de plataforma (THM, HTB…) reutilizables */
+.badge {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: .62rem;
+  padding: 2px 8px;
+  border-radius: 4px;
+  letter-spacing: .06em;
+}
+.badge-thm { background: #1a2e22; color: #5ab580; border: 1px solid #2a4433; }
+.badge-htb { background: #1a2a1e; color: #9fef00; border: 1px solid #2a3e20; opacity: .85; }
+.badge-ctf { background: #1e1e2a; color: #8888cc; border: 1px solid #2e2e44; }
+
+/* Utilidades */
+.mt-tool    { margin-top: 14px; }
+.callout-mt { margin-top: 12px; }
