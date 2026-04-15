@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Linux PrivEsc — Cheatsheet</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<header>
+  <button id="toggle-btn" aria-label="Toggle sidebar">
+    <span></span><span></span><span></span>
+  </button>
+  <span class="header-title">~/cheatsheets/linux-privesc</span>
+  <span class="header-dot"></span>
+</header>
+
+<div id="overlay"></div>
+
+<aside id="sidebar">
+  <div class="profile-block">
+    <div class="avatar-wrap">
+      <img src="23a9e75008cd9121e22a58755a11b042.jpg" alt="Avatar" id="avatar"/>
+    </div>
+    <p class="profile-name">zeta</p>
+    <p class="profile-role">Student · Cybersecurity Engineering</p>
+  </div>
+
+  <div class="sidebar-divider"></div>
+
+  <div class="sidebar-section">
+    <p class="sidebar-label">En esta página</p>
+    <ul class="sidebar-nav">
+      <li><a href="#enumeracion"     class="nav-link"><span class="ico">✦</span> Enumeración</a></li>
+      <li><a href="#find"            class="nav-link"><span class="ico">✦</span> Comando find</a></li>
+      <li><a href="#herramientas"    class="nav-link"><span class="ico">✦</span> Herramientas</a></li>
+      <li><a href="#suid"            class="nav-link"><span class="ico">✦</span> SUID</a></li>
+      <li><a href="#capabilities"    class="nav-link"><span class="ico">✦</span> Capabilities</a></li>
+      <li><a href="#cron"            class="nav-link"><span class="ico">✦</span> Cron Jobs</a></li>
+      <li><a href="#path"            class="nav-link"><span class="ico">✦</span> PATH</a></li>
+      <li><a href="#nfs"             class="nav-link"><span class="ico">✦</span> NFS</a></li>
+    </ul>
+  </div>
+
+  <div class="sidebar-divider"></div>
+
+  <div class="sidebar-section">
+    <p class="sidebar-label">Volver</p>
+    <ul class="sidebar-nav">
+      <li><a href="index.html"><span class="ico ext">←</span> Portfolio</a></li>
+    </ul>
+  </div>
+</aside>
+
+<div id="layout">
+  <main id="main">
+
+    <div class="breadcrumb">
+      <a href="index.html">~/portfolio</a>
+      <span>/</span>
+      <a href="index.html#cheatsheets">cheatsheets</a>
+      <span>/</span>
+      linux-privesc
+    </div>
+
+    <div class="doc-header">
+      <p class="hero-tag">// CHEATSHEET</p>
+      <h1>Linux Privilege Escalation</h1>
+      <p>Comandos, técnicas y herramientas para la enumeración y escalada de privilegios en Linux.</p>
+    </div>
+
+    <!-- ENUMERACIÓN -->
+    <div class="cs-group fade-in" id="enumeracion">
+      <h2 class="cs-group-title">Enumeración</h2>
+      <div class="cmd-list">
+
+        <div class="cmd-item">
+          <div class="cmd-code">hostname</div>
+          <p class="cmd-desc">Nombre del host de destino.</p>
+        </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">uname -a</div>
+          <p class="cmd-desc">Detalles adicionales sobre el kernel utilizado por el sistema.</p>
+        </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">cat /proc/version</div>
+          <p class="cmd-desc">El sistema de archivos proc (procfs) proporciona información sobre el sistema de destino, incluyendo detalles del kernel.</p>
+        </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">cat /etc/issue</div>
+          <p class="cmd-desc">Suele contener información sobre el sistema operativo. Puede estar personalizado.</p>
+        </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">ss -tuln</div>
+          <p class="cmd-desc">Puertos abiertos en el sistema.</p>
+        </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">ps [opciones]</div>
+          <p class="cmd-desc">Muestra procesos en ejecución. Campos: PID, TTY, Time, CMD.</p>
+          <div class="cmd-sub">
+            <div class="cmd-sub-item"><code>ps -A </code><span> Muestra todos los procesos en ejecución.</span></div>
+            <div class="cmd-sub-item"><code>ps axfj</code><span>Muestra árbol de procesos.</span></div>
+            <div class="cmd-sub-item"><code>ps aux</code><span>Procesos de todos los usuarios, con usuario iniciador y procesos sin terminal.</span></div>
+          </div>
+        </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">env</div>
+          <p class="cmd-desc">Variables de entorno del sistema.</p>
+        </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">sudo -l</div>
+          <p class="cmd-desc">Lista todos los comandos que el usuario actual puede ejecutar con sudo.</p>
+        </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">ifconfig</div>
+          <p class="cmd-desc">Información sobre las interfaces de red del sistema.</p>
+        </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">ip route</div>
+          <p class="cmd-desc">Rutas de red configuradas.</p>
+        </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">netstat [opciones]</div>
+          <p class="cmd-desc">Información sobre conexiones existentes.</p>
+          <div class="cmd-sub">
+            <div class="cmd-sub-item"><code>netstat -a</code><span>Todos los puertos en escucha y conexiones establecidas.</span></div>
+            <div class="cmd-sub-item"><code>netstat -at / -au</code><span>Listar protocolos TCP o UDP respectivamente.</span></div>
+            <div class="cmd-sub-item"><code>netstat -l</code><span>Puertos en modo escucha.</span></div>
+            <div class="cmd-sub-item"><code>netstat -s</code><span>Estadísticas de uso de red por protocolo.</span></div>
+            <div class="cmd-sub-item"><code>netstat -tp</code><span>Conexiones con nombre de servicio e info del PID.</span></div>
+            <div class="cmd-sub-item"><code>netstat -i</code><span>Estadísticas de la interfaz.</span></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- FIND -->
+    <div class="cs-group fade-in" id="find">
+      <h2 class="cs-group-title">Comando find</h2>
+      <div class="cmd-list">
+
+        <div class="cmd-item">
+          <div class="cmd-code">find . -name &lt;name&gt;</div>
+          <p class="cmd-desc">Busca el archivo llamado <code style="font-family:'Share Tech Mono',monospace;color:#a0c8a0">&lt;name&gt;</code> en el directorio actual.</p>
+        </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">find /&lt;directorio&gt; -name &lt;name&gt;</div>
+          <p class="cmd-desc">Busca el archivo en el directorio especificado.</p>
+        </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">find / -type d -name &lt;nombre&gt;</div>
+          <p class="cmd-desc">Busca un directorio con ese nombre en <code style="font-family:'Share Tech Mono',monospace;color:#a0c8a0">/</code>.</p>
+        </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">find / -type f -perm 0777</div>
+          <p class="cmd-desc">Archivos con permisos 777 — legibles, escribibles y ejecutables por todos los usuarios.</p>
+        </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">find / -perm a=x</div>
+          <p class="cmd-desc">Busca archivos ejecutables.</p>
+        </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">find /home -user &lt;user&gt;</div>
+          <p class="cmd-desc">Todos los archivos del usuario especificado en <code style="font-family:'Share Tech Mono',monospace;color:#a0c8a0">/home</code>.</p>
+        </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">find / -mtime &lt;días&gt;</div>
+          <p class="cmd-desc">Archivos modificados en los últimos N días.</p>
+        </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">find / -atime &lt;días&gt;</div>
+          <p class="cmd-desc">Archivos accedidos en los últimos N días.</p>
+        </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">find / -cmin -&lt;minutos&gt;</div>
+          <p class="cmd-desc">Archivos modificados en los últimos N minutos.</p>
+        </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">find / -amin -&lt;minutos&gt;</div>
+          <p class="cmd-desc">Archivos accedidos en los últimos N minutos.</p>
+        </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">find / -size +&lt;tamaño&gt;M</div>
+          <p class="cmd-desc">Archivos de ese tamaño o más. Usa <code style="font-family:'Share Tech Mono',monospace;color:#a0c8a0">-</code> para menor.</p>
+        </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">find / -writable -type d 2>/dev/null</div>
+          <p class="cmd-desc">Carpetas con permisos de escritura para todos los usuarios.</p>
+        </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">find / -perm -o x -type d 2>/dev/null</div>
+          <p class="cmd-desc">Carpetas con permisos de ejecución para todos los usuarios.</p>
+        </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">find / -perm -u=s -type f 2>/dev/null</div>
+          <p class="cmd-desc">Archivos con el bit SUID activado — permite ejecutarlos con privilegios del propietario.</p>
+        </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">find / -name perl* / -name python* / -name gcc*</div>
+          <p class="cmd-desc">Busca intérpretes o compiladores disponibles en el sistema (útil para exploits locales).</p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- HERRAMIENTAS -->
+    <div class="cs-group fade-in" id="herramientas">
+      <h2 class="cs-group-title">Herramientas</h2>
+      <div class="tool-grid">
+
+        <a class="tool-link" href="https://github.com/peass-ng/PEASS-ng/tree/master/linPEAS" target="_blank">
+          <span class="tool-ico">GH</span>
+          <span class="tool-name">linPEAS</span>
+          <span>PEASS-ng — script de enumeración automatizada</span>
+          <span class="tool-arrow">↗</span>
+        </a>
+
+        <a class="tool-link" href="https://github.com/rebootuser/LinEnum" target="_blank">
+          <span class="tool-ico">GH</span>
+          <span class="tool-name">LinEnum</span>
+          <span>Enumeración local de Linux</span>
+          <span class="tool-arrow">↗</span>
+        </a>
+
+        <a class="tool-link" href="https://github.com/diego-treitos/linux-smart-enumeration" target="_blank">
+          <span class="tool-ico">GH</span>
+          <span class="tool-name">linux-smart-enumeration</span>
+          <span>Enumeración inteligente con niveles de detalle</span>
+          <span class="tool-arrow">↗</span>
+        </a>
+
+        <a class="tool-link" href="https://github.com/linted/linuxprivchecker" target="_blank">
+          <span class="tool-ico">GH</span>
+          <span class="tool-name">linuxprivchecker</span>
+          <span>Chequeo de vectores de escalada de privilegios</span>
+          <span class="tool-arrow">↗</span>
+        </a>
+
+        <a class="tool-link" href="https://github.com/DominicBreuker/pspy" target="_blank">
+          <span class="tool-ico">GH</span>
+          <span class="tool-name">pspy</span>
+          <span>Monitoreo de procesos sin privilegios de root</span>
+          <span class="tool-arrow">↗</span>
+        </a>
+
+        <a class="tool-link" href="https://www.exploit-db.com/" target="_blank">
+          <span class="tool-ico">GH</span>
+          <span class="tool-name">Exploit Database</span>
+          <span>Base de Datos sobre diferentes CVEs.</span>
+          <span class="tool-arrow">↗</span>
+        </a>
+
+      </div>
+    </div>
+
+    <!-- SUID -->
+    <div class="cs-group fade-in" id="suid">
+      <h2 class="cs-group-title">SUID / SGID</h2>
+      <div class="callout">
+        <p><strong style="color:var(--text)">SUID</strong> (Set User ID) y <strong style="color:var(--text)">SGID</strong> (Set Group ID) permiten ejecutar un archivo con el nivel de permisos del propietario o del grupo, respectivamente.</p>
+      </div>
+      <div class="cmd-list">
+        <div class="cmd-item">
+          <div class="cmd-code">find / -type f -perm -04000 -ls 2>/dev/null</div>
+          <p class="cmd-desc">Lista todos los archivos con los bits SUID o SGID activados.</p>
+        </div>
+      </div>
+      <div style="margin-top:14px">
+        <a class="tool-link" href="https://gtfobins.github.io/" target="_blank">
+          <span class="tool-ico">WEB</span>
+          <span class="tool-name">GTFOBins</span>
+          <span>Binarios Unix que pueden usarse para escalar privilegios</span>
+          <span class="tool-arrow">↗</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- CAPABILITIES -->
+    <div class="cs-group fade-in" id="capabilities">
+      <h2 class="cs-group-title">Capabilities</h2>
+      <div class="callout">
+        <p>Las <strong style="color:var(--text)">Capabilities</strong> permiten gestionar privilegios con mayor precisión que SUID, asignando solo los permisos necesarios a un proceso.</p>
+      </div>
+      <div class="cmd-list">
+        <div class="cmd-item">
+          <div class="cmd-code">getcap -r / 2>/dev/null</div>
+          <p class="cmd-desc">Enumera recursivamente todas las capabilities configuradas en el sistema (como usuario sin privilegios).</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CRON JOBS -->
+    <div class="cs-group fade-in" id="cron">
+      <h2 class="cs-group-title">Cron Jobs</h2>
+      <div class="callout">
+        <p>Las tareas cron ejecutan scripts o binarios en momentos específicos. Si una tarea corre como root y el script es modificable, es un vector de escalada.</p>
+      </div>
+      <div class="cmd-list">
+        <div class="cmd-item">
+          <div class="cmd-code">cat /etc/crontab</div>
+          <p class="cmd-desc">Muestra las tareas cron configuradas a nivel del sistema.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- PATH -->
+    <div class="cs-group fade-in" id="path">
+      <h2 class="cs-group-title">PATH Hijacking</h2>
+      <div class="callout">
+        <p>Si una carpeta con permisos de escritura está en <code>$PATH</code>, puedes crear un ejecutable falso con el nombre de un comando legítimo para secuestrar su ejecución.</p>
+      </div>
+      <div class="cmd-list">
+
+        <div class="cmd-item">
+          <div class="cmd-code">echo $PATH</div>
+          <p class="cmd-desc">Muestra el valor actual de la variable PATH.</p>
+        </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">find / -writable 2>/dev/null | cut -d "/" -f 2,3 | grep -v proc | sort -u</div>
+          <p class="cmd-desc">Lista directorios con permisos de escritura, filtrando <code style="font-family:'Share Tech Mono',monospace;color:#a0c8a0">/proc</code>.</p>
+        </div>
+
+      </div>
+      <div class="callout" style="margin-top:12px">
+        <p>Preguntas clave: ¿Hay carpetas en $PATH con escritura? ¿Se puede modificar $PATH? ¿Existe un script que use comandos sin ruta absoluta?</p>
+      </div>
+    </div>
+
+    <!-- NFS -->
+    <div class="cs-group fade-in" id="nfs">
+      <h2 class="cs-group-title">NFS</h2>
+      <div class="callout">
+        <p>Si un recurso NFS está montado con <code>no_root_squash</code>, un cliente remoto puede crear archivos SUID y ejecutarlos en el servidor como root.</p>
+      </div>
+      <div class="cmd-list">
+
+        <div class="cmd-item">
+          <div class="cmd-code">cat /etc/exports</div>
+          <p class="cmd-desc">Archivo de configuración NFS. Creado durante la instalación del servidor; readable por usuarios normales.</p>
+        </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">showmount -e &lt;IP&gt;</div>
+          <p class="cmd-desc">Lista los recursos NFS exportados del host objetivo.</p>
+        </div>
+
+      </div>
+    </div>
+
+      <footer>
+      <p>© 2025 zeta &nbsp;·&nbsp; Offensive Security</p>
+    </footer>
+
+  </main>
+</div>
+
+<script src="main.js"></script>
+</body>
+</html>
