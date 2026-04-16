@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NetExec — Cheatsheet</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<header>
+  <button id="toggle-btn" aria-label="Toggle sidebar">
+    <span></span><span></span><span></span>
+  </button>
+  <span class="header-title">~/cheatsheets/netexec</span>
+  <span class="header-dot"></span>
+</header>
+
+<div id="overlay"></div>
+
+<aside id="sidebar">
+  <div class="profile-block">
+    <div class="avatar-wrap">
+      <img src="23a9e75008cd9121e22a58755a11b042.jpg" alt="Avatar" id="avatar"/>
+    </div>
+    <p class="profile-name">zeta</p>
+    <p class="profile-role">Student · Cybersecurity Engineering</p>
+  </div>
+
+  <div class="sidebar-divider"></div>
+
+  <div class="sidebar-section">
+    <p class="sidebar-label">En esta página</p>
+    <ul class="sidebar-nav">
+      <li><a href="#uso básico"     class="nav-link"><span class="ico">✦</span> Uso Básico</a></li>
+      <li><a href="#autenticación"            class="nav-link"><span class="ico">✦</span> Autenticación</a></li>
+      <li><a href="#enumeraciónsmb"            class="nav-link"><span class="ico">✦</span> Enumeración (SMB)</a></li>
+      <li><a href="#enumeraciónldap"            class="nav-link"><span class="ico">✦</span> Enumeración (LDAP)</a></li>
+      <li><a href="#enumeraciónmssql"            class="nav-link"><span class="ico">✦</span> Enumeración (MSSQL)</a></li>
+      <li><a href="#dumping"    class="nav-link"><span class="ico">✦</span> Credential Dumping</a></li>
+      <li><a href="#módulos"            class="nav-link"><span class="ico">✦</span> Módulos</a></li>
+    </ul>
+  </div>
+
+  <div class="sidebar-divider"></div>
+
+  <div class="sidebar-section">
+    <p class="sidebar-label">Volver</p>
+    <ul class="sidebar-nav">
+      <li><a href="index.html"><span class="ico ext">←</span> Portfolio</a></li>
+    </ul>
+  </div>
+</aside>
+
+<div id="layout">
+  <main id="main">
+
+    <div class="breadcrumb">
+      <a href="index.html">~/portfolio</a>
+      <span>/</span>
+      <a href="index.html#cheatsheets">cheatsheets</a>
+      <span>/</span>
+      linux-privesc
+    </div>
+
+    <div class="doc-header">
+      <p class="hero-tag">// CHEATSHEET</p>
+      <h1>NetExec</h1>
+      <p>Comandos para la enumeración sobre distintos protocolos con NetExec.</p>
+    </div>
+
+    <!-- USO BASICO -->
+    <div class="cs-group fade-in" id="uso básico">
+      <h2 class="cs-group-title">Uso Básico</h2>
+      <div class="cmd-list">
+
+        <div class="cmd-item">
+          <div class="cmd-code">nxc &lt;service&gt; &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt;</div>
+          <div class="cmd-code">nxc &lt;service&gt; &lt;target&gt; -u &lt;username&gt; -H &lt;NT_HASH&gt;</div>
+          <p class="cmd-desc">Se puede realizar una enumeracion de credenciales a un servicio en especifico (MSSQL, LDAP, FTP, WINRM, SMB, etc), NetExec tambien permite realizar PtH (-H).</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- AUTENTICACION -->
+    <div class="cs-group fade-in" id="autenticación">
+      <h2 class="cs-group-title">Autenticación</h2>
+      <div class="cmd-list">
+
+        <div class="cmd-item">
+          <div class="cmd-code">nxc &lt;service&gt; &lt;target&gt; -u '' -p ''</div>
+          <p class="cmd-desc">Autenticación nula.</p>
+        </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">nxc &lt;service&gt; &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt;</div>
+          <p class="cmd-desc">Autenticación con el usuario <code style="font-family:'Share Tech Mono',monospace;color:#a0c8a0">guest</code>, usuario por defecto en Windows.</p>
+        </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">nxc &lt;service&gt; &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; --local-auth</div>
+          <p class="cmd-desc">Autenticación local, esta sirve para forzar la autenticación contra cuentas locales del sistema operativo (SAM) en vez de cuentas de AD.</p>
+        </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">nxc smb &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; -k</div>
+          <div class="cmd-code">nxc ldap &lt;target&gt; --use-kcache</div>
+          <p class="cmd-desc">Autenticación utilizando ticket de kerberos.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ENUMERACION SMB -->
+    <div class="cs-group fade-in" id="enumeraciónsmb">
+      <h2 class="cs-group-title">Enumeración (SMB)</h2>
+      <div class="cmd-list">
+
+        <div class="cmd-item">
+          <div class="cmd-code">nxc smb &lt;target&gt;</div>
+          <p class="cmd-desc">Enumeración basica.</p>
+        </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">nxc smb &lt;target&gt; -u '' -p '' --shares</div>
+          <div class="cmd-code">nxc smb &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; --shares</div>
+          <p class="cmd-desc">Listar shares.</p>
+        </div>
+
+         <div class="cmd-item">
+          <div class="cmd-code">nxc smb &lt;target&gt; -u '' -p '' --users</div>
+          <div class="cmd-code">nxc smb &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; --users</div>
+          <div class="cmd-code">nxc smb &lt;target&gt; -u '' -p '' --rid-brute</div>
+          <p class="cmd-desc">Listar usuarios.</p>
+        </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">nxc smb &lt;target&gt; -u users.txt -p &lt;password&gt; --continue-on-success</div>
+          <div class="cmd-code">nxc smb &lt;target&gt; -u users.txt -p passwords.txt --no-bruteforce --continue-on-success</div>
+          <p class="cmd-desc">Spraying.</p>
+        </div>
+      </div>
+    </div>
+
+        <!-- ENUMERACION LDAP -->
+    <div class="cs-group fade-in" id="enumeraciónldap">
+      <h2 class="cs-group-title">Enumeración (LDAP)</h2>
+      <div class="cmd-list">
+
+        <div class="cmd-item">
+          <div class="cmd-code">nxc ldap &lt;target&gt;</div>
+          <p class="cmd-desc">Enumeración basica.</p>
+        </div>
+
+         <div class="cmd-item">
+          <div class="cmd-code">nxc ldap &lt;target&gt; -u '' -p '' --users</div>
+          <div class="cmd-code">nxc ldap &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; --users</div>
+          <p class="cmd-desc">Listar usuarios.</p>
+        </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">nxc ldap &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; --bloodhound --dns-server ip --dns-tcp -c all</div>
+          <p class="cmd-desc">Extraer información de Active Directory en un formato BloodHound.</p>
+        </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">nxc ldap &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; -M ldap-checker</div>
+          <p class="cmd-desc">Comprobar el estado de seguridad de LDAP: LDAP Signing y LDAPS Channel Binding, esto con la finalidad de realizar ataques como LDAP Relay.</p>
+        </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">nxc ldap &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; --kerberoasting hash.txt</div>
+          <div class="cmd-code">nxc ldap &lt;target&gt; -u &lt;username &gt; -p &lt;password&gt; --asreproast hash.txt</div>
+          <p class="cmd-desc">Kerberosting y ASREProast</p>
+        </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">nxc ldap &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; -M pre2k</div>
+          <p class="cmd-desc">Enumerar cuentas de computadora con la opcion "Assign this computer account as a pre-Windows 2000 computer".</p>
+        </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">nxc ldap &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; --find-delegation</div>
+          <p class="cmd-desc">Enumerar objetos que que pueden ser abusados para impersonar usuarios (Unconstrained Delegation, Constrained Delegation, Resource-Based Contrained Delegation).</p>
+        </div>
+
+      </div>
+    </div>
+
+        <!-- ENUMERACION MSSQL -->
+    <div class="cs-group fade-in" id="enumeraciónmssql">
+      <h2 class="cs-group-title">Enumeración (MSSQL)</h2>
+      <div class="cmd-list">
+
+        <div class="cmd-item">
+          <div class="cmd-code">nxc mssql &lt;target&gt; &lt;username&gt; -p &lt;password&gt; </div>
+          <p class="cmd-desc">Autenticación basica.</p>
+        </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">nxc mssql &lt;target&gt; &lt;username&gt; -p &lt;password&gt; -x command</div>
+          <p class="cmd-desc">Ejecutar comandos (xp_cmdshell).</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CREDENTIAL DUMPING -->
+    <div class="cs-group fade-in" id="dumping">
+      <h2 class="cs-group-title">CREDENTIAL DUMPING</h2>
+      <div class="callout">
+        <p>La base de datos <strong style="color:var(--text)">LSA</strong> (HKLM\LSA) y el proceso <strong style="color:var(--text)">SAM</strong> (HKLM\SAM) contienen usuarios junto a sus hashes.</p>
+      </div>
+      <div class="cmd-list">
+        <div class="cmd-item">
+          <div class="cmd-code">nxc smb &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; --lsa</div>
+          <div class="cmd-code">nxc smb &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; --sam</div>
+          <p class="cmd-desc">Esto permite identificar si el usuario que agregamos tiene privilegios para poder realizar el dumping.</p>
+        </div>
+      </div>
+    </div>
+      <div class="callout">
+        <p><strong style="color:var(--text)">NTDS.dit</strong> es una base de datos que contiene toda la informacion del dominio.</p>
+      </div>
+      <div class="cmd-list">
+        <div class="cmd-item">
+          <div class="cmd-code">nxc smb &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; --ntds</div>
+          <p class="cmd-desc">Esto permite identificar si el usuario que agregamos tiene privilegios para poder realizar el dumping.</p>
+        </div>
+      </div>
+
+    </div>
+
+
+      <footer>
+      <p>© 2025 zeta &nbsp;·&nbsp; Offensive Security</p>
+    </footer>
+
+  </main>
+</div>
+
+<script src="main.js"></script>
+</body>
+</html>
